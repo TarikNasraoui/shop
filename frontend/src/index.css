@@ -9,3 +9,10 @@ h3 {
 .rating span {
   margin: 0.1rem;
 }
+
+.loader {
+  width: 100px;
+  height: 100px;
+  display: block;
+  margin: 10vh auto 0;
+}
