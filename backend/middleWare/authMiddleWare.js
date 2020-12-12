@@ -14,7 +14,6 @@ const protect = asyncHandler(async (req, res, next) => {
       req.user = await User.findById(decode.id).select("-password");
       next();
     } catch (error) {
-      console.log(error);
       res.status(401);
       throw new Error("not authorized , token failed");
     }

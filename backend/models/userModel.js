@@ -21,6 +21,10 @@ const userShema = mongoose.Schema(
       required: true,
       default: false,
     },
+    test: {
+      type: String,
+      default: false,
+    },
   },
   {
     timestamp: true,
