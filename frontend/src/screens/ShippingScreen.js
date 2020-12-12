@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { saveShippingAdress } from "../redux/actions/cartActions";
+import { saveShippingAddress } from "../redux/actions/cartActions";
 import FormContainer from "../components/FormContainer";
 
 const ShippingScreen = ({ history }) => {
-  const [adress, setAdress] = useState("");
+  const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [country, setCountry] = useState("");
   const dispatch = useDispatch();
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(saveShippingAdress({ adress, city, postalCode, country }));
+    dispatch(saveShippingAddress({ address, city, postalCode, country }));
     history.push("/payment");
   };
 
   return (
     <FormContainer>
       <Form onSubmit={submitHandler}>
-        <Form.Group controlId="adress">
-          <Form.Label>Adress</Form.Label>
+        <Form.Group controlId="address">
+          <Form.Label>Address</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter Adress"
-            value={adress}
-            onChange={(e) => setAdress(e.target.value)}
+            placeholder="Enter Address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
           ></Form.Control>
         </Form.Group>
         <Form.Group controlId="city">
