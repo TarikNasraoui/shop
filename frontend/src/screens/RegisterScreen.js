@@ -57,8 +57,6 @@ const RegisterScreen = ({ location, history }) => {
             onChange={(e) => setEmail(e.target.value)}
           ></Form.Control>
         </Form.Group>
-      </Form>
-      <Form onSubmit={submitHandler}>
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control
@@ -81,6 +79,7 @@ const RegisterScreen = ({ location, history }) => {
           Sign In
         </Button>
       </Form>
+
       <Row className="py-3">
         <Col>
           You already have an account ?{" "}

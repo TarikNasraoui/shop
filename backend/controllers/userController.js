@@ -77,6 +77,9 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       isAdmin: updatedUser.isAdmin,
       token: generateToken(updatedUser._id),
     });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
   }
 });
 
@@ -86,5 +89,48 @@ const getUsers = asyncHandler(async (req, res) => {
     res.json(users);
   }
 });
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (user) {
+    user.remove();
+    res.json({ message: "User deleted", email: user.email });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
 
-export { authUser, registerUser, getUserProfile, updateUserProfile, getUsers };
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select("-password");
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select("-password");
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    user.isAdmin =
+      req.body.isAdmin !== undefined ? req.body.isAdmin : user.isAdmin;
+    const updatedUser = await user.save();
+    res.json(updatedUser);
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+export {
+  authUser,
+  registerUser,
+  getUserProfile,
+  updateUserProfile,
+  getUsers,
+  deleteUser,
+  getUserById,
+  updateUser,
+};
