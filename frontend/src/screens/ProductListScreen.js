@@ -4,7 +4,7 @@ import { Table, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import { Loader } from "../components/Loader";
-import { listProducts } from "../redux/actions/productActions";
+import { listProducts, deleteProduct } from "../redux/actions/productActions";
 import ModalConfirm from "../components/ModalConfirm";
 
 const ProductListScreen = ({ history }) => {
@@ -22,13 +22,16 @@ const ProductListScreen = ({ history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const deletedProduct = useSelector((state) => state.deletedProduct);
+  const { success: successDelete } = deletedProduct;
+
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(listProducts());
     } else {
       history.push("/login");
     }
-  }, [dispatch, history, userInfo]);
+  }, [dispatch, history, userInfo, successDelete]);
 
   // launch delete popup
   const deleteHandler = (id) => {
@@ -37,9 +40,9 @@ const ProductListScreen = ({ history }) => {
   };
   // delete Confirmation
   const handleConfim = () => {
-    // if (index) {
-    //   dispatch(deleteUser(index));
-    // }
+    if (index) {
+      dispatch(deleteProduct(index));
+    }
     setShow(false);
   };
   const createProductHandler = () => {
@@ -57,7 +60,7 @@ const ProductListScreen = ({ history }) => {
       />
       <Row>
         <Col>
-          <h1>user List</h1>
+          <h1>Products List</h1>
         </Col>
         <Col className="text-right">
           <Button className="my-3" onClick={createProductHandler}>
