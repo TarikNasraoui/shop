@@ -11,7 +11,8 @@ h3 {
 }
 h1 {
   font-size: 1.4rem;
-  line-height: 0.4rem;
+  line-height: 1.8rem;
+  padding: 1rem 0;
 }
 .loader {
   width: 100px;

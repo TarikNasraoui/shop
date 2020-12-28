@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Modal, Button } from "react-bootstrap";
 
 const ModalConfirm = ({ state, handleClose, handleConfirm, title, body }) => {
