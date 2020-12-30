@@ -4,7 +4,12 @@ import { Table, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import { Loader } from "../components/Loader";
-import { listProducts, deleteProduct } from "../redux/actions/productActions";
+import {
+  listProducts,
+  deleteProduct,
+  createProduct,
+} from "../redux/actions/productActions";
+import { PRODUCT_CREATE_RESET } from "../redux/constants/productConstants";
 import ModalConfirm from "../components/ModalConfirm";
 
 const ProductListScreen = ({ history }) => {
@@ -25,13 +30,32 @@ const ProductListScreen = ({ history }) => {
   const deletedProduct = useSelector((state) => state.deletedProduct);
   const { success: successDelete } = deletedProduct;
 
+  const createdProduct = useSelector((state) => state.createdProduct);
+  const {
+    success: successCreate,
+    loading: loadingCreate,
+    product: productCreate,
+    error: errorCreate,
+  } = createdProduct;
+
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(listProducts());
-    } else {
+    dispatch({ type: PRODUCT_CREATE_RESET });
+    if (!userInfo || !userInfo.isAdmin) {
       history.push("/login");
     }
-  }, [dispatch, history, userInfo, successDelete]);
+    if (successCreate) {
+      history.push(`/admin/product/${productCreate._id}/edit`);
+    } else {
+      dispatch(listProducts());
+    }
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    successDelete,
+    successCreate,
+    createProduct,
+  ]);
 
   // launch delete popup
   const deleteHandler = (id) => {
@@ -46,7 +70,7 @@ const ProductListScreen = ({ history }) => {
     setShow(false);
   };
   const createProductHandler = () => {
-    console.log("click");
+    dispatch(createProduct());
   };
   return (
     <>
@@ -64,10 +88,12 @@ const ProductListScreen = ({ history }) => {
         </Col>
         <Col className="text-right">
           <Button className="my-3" onClick={createProductHandler}>
-            <i className="fas fas-plus"></i>Create Poduct
+            <i className="fas fa-plus"></i> Create Poduct
           </Button>
         </Col>
       </Row>
+      {loadingCreate && <Loader />}
+      {errorCreate && <Message variant="danger">{errorCreate}</Message>}
       {loading ? (
         <Loader />
       ) : error ? (
@@ -94,7 +120,7 @@ const ProductListScreen = ({ history }) => {
                 <td>{product.brand}</td>
 
                 <td>
-                  <LinkContainer to={`/admin/user/${product._id}/edit`}>
+                  <LinkContainer to={`/admin/product/${product._id}/edit`}>
                     <Button variant="light" className="btn-sm">
                       <i className="fas fa-edit"></i>
                     </Button>
