@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
@@ -21,6 +22,7 @@ const ProductEditScreen = ({ match, history }) => {
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   // handle popup confirmation dialog
   const [show, setShow] = useState(false);
@@ -83,10 +85,30 @@ const ProductEditScreen = ({ match, history }) => {
     );
     setShow(false);
   };
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("image", file);
+    setUploading(true);
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.post(`/api/upload`, formData, config);
+      setImage(data);
+      setUploading(false);
+    } catch (error) {
+      console.log(error);
+      setUploading(false);
+    }
+  };
   return (
     <>
       <Link to="/admin/productlist" className="btn btn-light my-3">
-        <i class="fas fa-angle-left"></i> Back
+        <i className="fas fa-angle-left"></i> Back
       </Link>
       <ModalConfirm
         handleShow={handleShow}
@@ -104,7 +126,7 @@ const ProductEditScreen = ({ match, history }) => {
         <Message>{error}</Message>
       ) : (
         <FormContainer>
-          <h1>Edit User</h1>
+          <h1>Edit Product</h1>
           <Form onSubmit={handleConfim}>
             <Form.Group controlId="name">
               <Form.Label>Name</Form.Label>
@@ -132,6 +154,13 @@ const ProductEditScreen = ({ match, history }) => {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
               ></Form.Control>
+              <Form.File
+                id="image-file"
+                label="Choose image"
+                custom
+                onChange={uploadFileHandler}
+              ></Form.File>
+              {uploading && <Loader />}
             </Form.Group>
             <Form.Group controlId="brand">
               <Form.Label>Brand</Form.Label>
