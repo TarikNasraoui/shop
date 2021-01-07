@@ -54,7 +54,7 @@ const ProductListScreen = ({ history }) => {
     userInfo,
     successDelete,
     successCreate,
-    createProduct,
+    productCreate,
   ]);
 
   // launch delete popup

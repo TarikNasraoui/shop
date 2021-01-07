@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import { Loader } from "../components/Loader";
 import { getOrders } from "../redux/actions/orderAction";
-import ModalConfirm from "../components/ModalConfirm";
 
 const OrdersListScreen = ({ history }) => {
-  // get Index User
-  const [index, setIndex] = useState(null);
-  // handle popup confirmation dialog
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
