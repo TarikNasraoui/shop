@@ -14,6 +14,7 @@ import { PRODUCT_CREATE_RESET } from "../redux/constants/productConstants";
 import ModalConfirm from "../components/ModalConfirm";
 
 const ProductListScreen = ({ history, match }) => {
+  const pageNumber = match.params.pageNumber;
   // get Index User
   const [index, setIndex] = useState(null);
   // handle popup confirmation dialog
@@ -24,7 +25,7 @@ const ProductListScreen = ({ history, match }) => {
   const dispatch = useDispatch();
 
   const productList = useSelector((state) => state.productList);
-  const { loading, error, products, page, pages } = productList;
+  const { loading, error, products, pages, page } = productList;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -48,7 +49,7 @@ const ProductListScreen = ({ history, match }) => {
     if (successCreate) {
       history.push(`/admin/product/${productCreate._id}/edit`);
     } else {
-      dispatch(listProducts());
+      dispatch(listProducts("", pageNumber));
     }
   }, [
     dispatch,
@@ -57,6 +58,7 @@ const ProductListScreen = ({ history, match }) => {
     successDelete,
     successCreate,
     productCreate,
+    pageNumber,
   ]);
 
   // launch delete popup
@@ -140,6 +142,8 @@ const ProductListScreen = ({ history, match }) => {
               ))}
             </tbody>
           </Table>
+
+          <Paginate pages={pages} page={page} isAdmin={true} />
         </>
       )}
     </>
