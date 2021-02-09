@@ -21,8 +21,6 @@ const ProductListScreen = ({ history, match }) => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const pageNumber = match.params.pageNumber || 1;
-
   const dispatch = useDispatch();
 
   const productList = useSelector((state) => state.productList);
@@ -50,7 +48,7 @@ const ProductListScreen = ({ history, match }) => {
     if (successCreate) {
       history.push(`/admin/product/${productCreate._id}/edit`);
     } else {
-      dispatch(listProducts("", pageNumber));
+      dispatch(listProducts());
     }
   }, [
     dispatch,
@@ -59,7 +57,6 @@ const ProductListScreen = ({ history, match }) => {
     successDelete,
     successCreate,
     productCreate,
-    pageNumber,
   ]);
 
   // launch delete popup
@@ -143,7 +140,6 @@ const ProductListScreen = ({ history, match }) => {
               ))}
             </tbody>
           </Table>
-          <Paginate pages={pages} page={page} isAdmin={true} />
         </>
       )}
     </>

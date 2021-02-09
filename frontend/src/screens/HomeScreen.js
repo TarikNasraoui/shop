@@ -10,10 +10,10 @@ import ProductCarousel from "../components/ProductCarousel";
 
 const HomeScreen = ({ match }) => {
   const keyword = match.params.keyword;
-  const pageNumber = match.params.pageNumber || 1;
+  const pageNumber = match.params.pageNumber;
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.productList);
-  const { loading, error, products, page, pages } = productList;
+  const { loading, error, products, pages, page } = productList;
 
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber));

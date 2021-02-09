@@ -14,11 +14,10 @@ import {
   detailsProducts,
   createProductReview,
 } from "../redux/actions/productActions";
+import { PRODUCT_CREATE_REVIEW_RESET } from "../redux/constants/productConstants";
 import { Loader } from "../components/Loader";
 import Message from "../components/Message";
 import Rating from "../components/Rating";
-
-import { PRODUCT_CREATE_REVIEW_RESET } from "../redux/constants/productConstants";
 
 const ProductScreen = ({ history, match }) => {
   const [qte, setQte] = useState(0);
@@ -31,28 +30,30 @@ const ProductScreen = ({ history, match }) => {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
   const productReviewed = useSelector((state) => state.productReviewed);
   const {
     loading: loadingReview,
     success: successReview,
     error: errorReview,
   } = productReviewed;
+
   useEffect(() => {
-    if (successReview) {
+    console.log(loadingReview);
+    if (successReview || !loadingReview) {
       setRating(0);
       setComment("");
-      // dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
-    dispatch(detailsProducts(match.params.id));
-  }, [match, dispatch, successReview]);
+    if (!product._id || product._id !== match.params.id) {
+      dispatch(detailsProducts(match.params.id));
+      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
+    }
+  }, [match, dispatch, successReview, loadingReview, product._id]);
 
   const addToCartHandler = () => {
     history.push(`/cart/${match.params.id}?qte=${qte}`);
   };
   const submitHandler = (e) => {
     e.preventDefault();
-
     dispatch(createProductReview(match.params.id, { rating, comment }));
   };
   return (
@@ -145,33 +146,28 @@ const ProductScreen = ({ history, match }) => {
             </Col>
           </Row>
           <Row>
-            <Col md={6}>
-              <h2>REVIEWS</h2>
+            <Col md="6">
+              <h1>Review</h1>
               {product.reviews.length === 0 && <Message>No Reviews</Message>}
               <ListGroup variant="flush">
                 {product.reviews.map((review) => (
                   <ListGroup.Item key={review._id}>
                     <strong>{review.name}</strong>
                     <Rating value={review.rating} />
-                    <p>{review.createdAt.substring(0, 10)}</p>
                     <p>{review.comment}</p>
                   </ListGroup.Item>
                 ))}
                 <ListGroup.Item>
-                  <h2>Write a customer Review</h2>
+                  <h2>Write a Customer Review</h2>
                   {successReview && (
-                    <Message variant="success">
-                      Review submitted successfully
-                    </Message>
+                    <Message> Review submitted successfully</Message>
                   )}
                   {loadingReview && <Loader />}
-                  {errorReview && (
-                    <Message variant="danger">{errorReview}</Message>
-                  )}
+                  {errorReview && <Message>{errorReview}</Message>}
                   {userInfo ? (
                     <Form onSubmit={submitHandler}>
                       <Form.Group controlId="rating">
-                        <Form.Label>Rating</Form.Label>
+                        <Form.Label>Select</Form.Label>
                         <Form.Control
                           as="select"
                           value={rating}
@@ -185,12 +181,12 @@ const ProductScreen = ({ history, match }) => {
                           <option value="5">5 - Excellent</option>
                         </Form.Control>
                       </Form.Group>
-                      <Form.Group controlId="comment">
+                      <Form.Group>
                         <Form.Label>Comment</Form.Label>
                         <Form.Control
                           as="textarea"
-                          row="3"
                           value={comment}
+                          row="3"
                           onChange={(e) => setComment(e.target.value)}
                         ></Form.Control>
                       </Form.Group>
@@ -204,7 +200,9 @@ const ProductScreen = ({ history, match }) => {
                     </Form>
                   ) : (
                     <Message>
-                      Please <Link to="/login">sign in</Link> to write a review{" "}
+                      <Message>
+                        Please <Link to="/login">sign in</Link> to write a view
+                      </Message>
                     </Message>
                   )}
                 </ListGroup.Item>
